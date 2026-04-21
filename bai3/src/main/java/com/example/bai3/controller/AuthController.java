@@ -27,11 +27,11 @@ public class AuthController {
         if ("admin".equals(username) && "admin123".equals(password)) {
             session.setAttribute("loggedUser", "Quản trị viên Hệ thống");
             session.setAttribute("role", "ADMIN");
-            return "redirect:/index"; // Lưu ý: Nếu ở file trên bạn cấu hình là /orders thì chỗ này phải là /orders nhé
+            return "redirect:/oders"; // Lưu ý: Nếu ở file trên bạn cấu hình là /orders thì chỗ này phải là /orders nhé
         } else if ("staff".equals(username) && "staff123".equals(password)) {
             session.setAttribute("loggedUser", "Nguyễn Văn Nhân Viên");
             session.setAttribute("role", "STAFF");
-            return "redirect:/index";
+            return "redirect:/oders";
         } else {
             request.setAttribute("error", "Sai tên đăng nhập hoặc mật khẩu!");
             return "login";
