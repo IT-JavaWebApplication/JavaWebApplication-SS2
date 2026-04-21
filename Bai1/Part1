@@ -1,0 +1,26 @@
+Dưới đây là nội dung trả lời cho Phần 1 — Phân tích logic được trình bày rõ ràng, không chứa các định dạng phức tạp để bạn có thể copy thẳng vào file .txt và nộp bài:
+
+==================================================
+PHẦN 1 - PHÂN TÍCH LOGIC
+
+Câu 1. Lỗi trong MyWebAppInitializer.java:
+
+Tại sao "/api/" khiến mọi request đến /welcome đều bị 404?
+Bởi vì cấu hình getServletMappings() xác định các URL mà DispatcherServlet sẽ tiếp nhận. Khi cấu hình là "/api/", DispatcherServlet chỉ nhận các request bắt đầu bằng "/api/" (ví dụ: /api/users, /api/welcome). Khi người dùng truy cập "/welcome", Tomcat thấy không khớp với "/api/*" và cũng không có Servlet nào khác xử lý, nên lập tức trả về lỗi 404 Not Found.
+
+DispatcherServlet đang nghe những URL nào với cấu hình này?
+Nó chỉ đang lắng nghe các URL có tiền tố là "/api/".
+
+Câu 2. Lỗi trong WebConfig.java:
+
+@ComponentScan(basePackages = "com.demo.service") gây ra hậu quả gì?
+Hậu quả là Spring IoC Container sẽ chỉ quét các class nằm trong package "com.demo.service" để tìm kiếm các annotation như @Component, @Controller, @Service.
+
+Spring MVC tìm @Controller ở đâu và không thể tìm thấy ở đâu theo cấu hình này?
+Spring MVC sẽ chỉ tìm ở package "com.demo.service". Do đó, nó KHÔNG THỂ tìm thấy WelcomeController vì class này đang nằm ở package "com.demo.controller" (hoặc "com.example.bai1.controller" theo thực tế code của bạn). Đối với Spring, controller này coi như không tồn tại.
+
+Câu 3. Tổng hợp:
+
+Nếu chỉ sửa lỗi 1 (Servlet Mapping) mà không sửa lỗi 2 (ComponentScan), ứng dụng có chạy không? Tại sao?
+Ứng dụng KHÔNG THỂ chạy thành công.
+Tại vì: Sửa lỗi 1 (đổi thành "/") giúp request "/welcome" lọt qua được Tomcat và đi vào DispatcherServlet. Tuy nhiên, khi vào trong, do lỗi 2 chưa sửa, Spring vẫn không biết đến sự tồn tại của WelcomeController. Vì vậy, DispatcherServlet sẽ không tìm thấy bất kỳ Handler (người xử lý) nào cho đường dẫn "/welcome" và cuối cùng vẫn sẽ trả về lỗi 404 (nhưng lần này là 404 do Spring MVC ném ra, không phải do Tomcat).

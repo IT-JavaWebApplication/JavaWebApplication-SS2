@@ -1,0 +1,25 @@
+package com.example.bai3.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+
+@Configuration
+@EnableWebMvc
+@ComponentScan(basePackages = "com.example.bai3") // Quét toàn bộ Controller của bạn
+public class AppConfig {
+
+    // Cấu hình ViewResolver để Spring biết đường tìm file .jsp
+    @Bean
+    public InternalResourceViewResolver viewResolver() {
+        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+
+        resolver.setPrefix("/");
+
+
+        resolver.setSuffix(".jsp");
+        return resolver;
+    }
+}

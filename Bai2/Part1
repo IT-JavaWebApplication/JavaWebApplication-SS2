@@ -1,0 +1,13 @@
+Phần 1 — Phân tích logic
+
+# | Vị trí (dòng/thành phần) | Loại vấn đề | Mô tả chi tiết hậu quả
+------------------------------------------------------------------------------------------------------------------------
+1 | <%! private int requestCounter = 0;%> | Race Condition (Biến toàn cục) | Cú pháp Declaration <%! %> khiến requestCounter trở thành biến instance (toàn cục) của Servlet. Trong môi trường web, khi nhiều người cùng lúc truy cập, việc sử dụng biến này sẽ gây ra hiện tượng Race Condition (xung đột luồng), dẫn đến việc đếm số lượt xem trang không chính xác.
+
+2 | | Comment HTML vs JSP Comment | Việc sử dụng thẻ comment HTML trong JSP là không tối ưu. Trình duyệt khi tải trang vẫn sẽ nhận được đoạn comment này trong Source Code HTML, gây lãng phí băng thông và có nguy cơ làm lộ các logic, thông tin nội bộ của hệ thống cho người dùng (End-user).
+
+3 | <% for (int i = 0; i < list.size(); i++) {...} %> và hàng loạt khối if - else | Chứa quá nhiều Logic trong View (Vi phạm Thin View) | Việc nhúng toàn bộ vòng lặp for và các câu lệnh if/else để tính toán logic xếp loại trực tiếp trong JSP làm file rất rối, khó đọc và khó bảo trì. Nó vi phạm nghiêm trọng nguyên tắc MVC khi View phải đảm nhận xử lý logic thay vì chỉ làm nhiệm vụ hiển thị dữ liệu.
+
+4 | <%= sv.getFullName() %> | Lỗi bảo mật XSS (Cross-Site Scripting) | Việc in trực tiếp chuỗi lấy từ sv.getFullName() ra HTML thông qua Expression mà không được mã hóa (escape) là cực kỳ rủi ro. Nếu tên sinh viên chứa các đoạn mã độc hại (ví dụ: JavaScript <script>...</script>), trình duyệt sẽ thực thi chúng, dẫn đến lỗ hổng bảo mật XSS.
+
+5 | <%= sv.getScore()%>; | Lỗi cú pháp (Syntax dư dấu chấm phẩy) | JSP Expression <%= %> sẽ được engine biên dịch thành câu lệnh in giá trị (ví dụ: out.print()). Do đó, bên trong nó chỉ được phép chứa một biểu thức trả về giá trị, không kết thúc bằng dấu chấm phẩy. Việc dư dấu `;` sẽ khiến bộ biên dịch ném ra lỗi (Compilation Error) và trang web không thể hiển thị.
